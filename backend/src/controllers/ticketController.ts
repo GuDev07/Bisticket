@@ -15,7 +15,7 @@ export async function criarTicket(req: Request, res: Response) {
     }
 
     const id = Number(req.user?.sub);
-    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
+    if(isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
 
     const { titulo, descricao } = req.body;
     try {
@@ -38,7 +38,7 @@ export async function comentarTicket(req: Request, res: Response) {
     }
 
     const id = Number(req.user?.sub);
-    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
+    if(isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
 
     const { comentario } = req.body;
     const ticketId = Number(req.params.id);
@@ -64,6 +64,29 @@ export async function comentarTicket(req: Request, res: Response) {
         return res.status(201).json(comentarioCriado);
     } catch(e) {
         return res.status(500).json({ message: "Erro ao comentar ticket", erro: e })
+    }
+}
+
+export async function verComentariosTicket(req: Request, res: Response) {
+    if(!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" })
+    }
+
+    const id = Number(req.params.id);
+    if(isNaN(id)) return res.status(400).json({ message: "ID do ticket não fornecido" });
+
+    try {
+        const comentarios = await prisma.comentario.findMany({
+            where: {
+                ticketId: id
+            },
+            include: {
+                usuario: true
+            }
+        })
+        return res.status(200).json(comentarios)
+    } catch(e) {
+        return res.status(500).json({ message: "Erro ao buscar comentários do ticket", erro: e })
     }
 }
 
@@ -114,7 +137,7 @@ export async function escalarTicket(req: Request, res: Response) {
 
     const id = Number(req.params.id);
 
-    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do ticket não fornecido" });
+    if(isNaN(id)) return res.status(400).json({ message: "ID do ticket não fornecido" });
 
     try {
         const ticketExistente = await prisma.ticket.findUnique({
