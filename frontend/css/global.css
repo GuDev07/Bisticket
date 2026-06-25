@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    --Deep-Bg: #121212;
+    --Bistech-Purple: #C8A0FF;
+    --Amber: #FF8C00;
+    --Mint: #AADE8D;
+    --Cian-Accent: #48C8E3;
+    --Clean-White: #f5f5Ef;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: var(--Deep-Bg);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 1rem;
+}
+
+.inter-light {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.inter-regular {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.inter-bold {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.title {
+    font-size: 2rem;
+    color: var(--Clean-White);
+}
+
+.input-text {
+    font-size: 1rem;
+    color: var(--Clean-White);
+}
+
+.button-text {
+    font-size: 1rem;
+    color: var(--Clean-White);
+}
+
+.purple-selection::selection {
+    background-color: var(--Bistech-Purple);
+    color: var(--Deep-Bg);
+}
+
+.purple-selection::-moz-selection {
+    background-color: var(--Bistech-Purple);
+    color: var(--Deep-Bg);
+}
+
+.purple-selection::-webkit-selection {
+    background-color: var(--Bistech-Purple);
+    color: var(--Deep-Bg);
+}
+
+.amber-selection::selection {
+    background-color: var(--Amber);
+    color: var(--Deep-Bg);
+}
+
+.amber-selection::-moz-selection {
+    background-color: var(--Amber);
+    color: var(--Deep-Bg);
+}
+
+.amber-selection::-webkit-selection {
+    background-color: var(--Amber);
+    color: var(--Deep-Bg);
+}
