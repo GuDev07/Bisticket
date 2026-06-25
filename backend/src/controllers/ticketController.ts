@@ -9,6 +9,12 @@ function obterNivel(usuario: string): number {
     return 0;
 };
 
+export async function decidirAcao(req: Request, res: Response) {
+    if(req.body.acao === "escalar") return await escalarTicket(req, res);
+    if(req.body.acao === "comentar") return await comentarTicket(req, res);
+    if(req.body.acao === "ver_comentarios") return await verComentariosTicket(req, res);
+}
+
 export async function criarTicket(req: Request, res: Response) {
     if(!req.user) {
         return res.status(401).json({ message: "Usuário não autenticado" })
@@ -18,6 +24,7 @@ export async function criarTicket(req: Request, res: Response) {
     if(isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
 
     const { titulo, descricao } = req.body;
+    if(!titulo.trim() || !descricao.trim()) return res.status(400).json({ message: "Título ou descrição não fornecido" });
     try {
         const ticket = await prisma.ticket.create({
             data: {
@@ -40,9 +47,10 @@ export async function comentarTicket(req: Request, res: Response) {
     const id = Number(req.user?.sub);
     if(isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
 
-    const { comentario } = req.body;
     const ticketId = Number(req.params.id);
     if(!ticketId || isNaN(ticketId)) return res.status(400).json({ message: "ID do ticket não fornecido" });
+    const { comentario } = req.body;
+    if(!comentario.trim()) return res.status(400).json({ message: "Comentário não fornecido" });
 
     try {
         const ticketExistente = await prisma.ticket.findUnique({
@@ -52,6 +60,8 @@ export async function comentarTicket(req: Request, res: Response) {
         });
         if(!ticketExistente) {
             return res.status(404).json({ message: "Ticket não encontrado" })
+        } else if (req.user.tipo === "cliente" && ticketExistente.usuarioId !== id) {
+            return res.status(403).json({ message: "Acesso negado" })
         }
 
         const comentarioCriado = await prisma.comentario.create({
@@ -76,12 +86,27 @@ export async function verComentariosTicket(req: Request, res: Response) {
     if(isNaN(id)) return res.status(400).json({ message: "ID do ticket não fornecido" });
 
     try {
+        const ticket = await prisma.ticket.findUnique({
+            where: {
+                id
+            }
+        });
+
+        if(req.user.tipo === "cliente" && ticket?.usuarioId !== Number(req.user.sub)) {
+            return res.status(403).json({ message: "Acesso negado" })
+        }
+
         const comentarios = await prisma.comentario.findMany({
             where: {
                 ticketId: id
             },
             include: {
-                usuario: true
+                usuario: {
+                    select: {
+                        nome: true,
+                        tipo: true
+                    }
+                }
             }
         })
         return res.status(200).json(comentarios)
