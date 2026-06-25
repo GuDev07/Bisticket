@@ -1,6 +1,8 @@
+const apiUrl = 'localhost:3000';
+
 export async function logar(email, senha) {
     try {
-        const login = await fetch('https://localhost:3000/auth/login', {
+        const login = await fetch(`https://${apiUrl}/auth/login`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email,
@@ -18,7 +20,7 @@ export async function logar(email, senha) {
 
 export async function cadastrar(nome, email, senha) {
     try {
-        const login = await fetch('https://localhost:3000/users', {
+        const login = await fetch(`https://${apiUrl}/users`, {
             method: 'POST',
             body: JSON.stringify({
                 nome: nome,

@@ -1,8 +1,10 @@
 import { cadastrar, logar } from './api.js';
 
-const container = document.querySelector('.content');
-
 function carregarPagina(pagina) {
+    const container = document.querySelector('.content');
+
+    if (!container) return;
+
     if (pagina === 1) {
         container.innerHTML = `
         <h1 class="inter-bold title purple-selection">Cadastro</h1>
@@ -65,7 +67,7 @@ function carregarPagina(pagina) {
 
         localStorage.setItem('token', token);
 
-        window.location.href = './tickets.html'
+        window.location.href = '/tickets.html'
     });
 
     registerBtn.addEventListener('click', () => {
@@ -73,4 +75,7 @@ function carregarPagina(pagina) {
     });
 }
 
-carregarPagina(0)
+
+document.addEventListener('DOMContentLoaded', async () => {
+    carregarPagina(0);  
+})
