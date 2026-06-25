@@ -14,7 +14,22 @@ export async function criarTicket(req: Request, res: Response) {
         return res.status(401).json({ message: "Usuário não autenticado" })
     }
 
-    
+    const id = Number(req.user?.sub);
+    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
+
+    const { titulo, descricao } = req.body;
+    try {
+        const ticket = await prisma.ticket.create({
+            data: {
+                titulo,
+                descricao,
+                usuarioId: id
+            }
+        })
+        return res.status(201).json(ticket);
+    } catch(e) {
+        return res.status(500).json({ message: "Erro ao criar ticket", erro: e })
+    }
 }
 
 export async function listarTickets(req: Request, res: Response) {
