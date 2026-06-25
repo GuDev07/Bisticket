@@ -164,6 +164,11 @@
     box-shadow: 0 0 15px var(--Bistech-Purple);
     justify-content: space-around;
     z-index: 1;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
 }
 
 .container::before {
@@ -176,6 +181,31 @@
     z-index: 0;
     border-radius: 8px;
     box-shadow: 0 0 5px var(--Bistech-Purple) inset;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+}
+
+.container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: 8px;
+    background-image: url('../assets/images/vetor-preto-branco-abstrato.jpg');
+    background-clip: content-box;
+    background-size: cover;
+    opacity: 0.005;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
 }
 
 .content {
@@ -186,7 +216,11 @@
     height: 100%;
     gap: 1rem;
     z-index: 1000;
-
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
 }
 
 .form {
@@ -248,4 +282,23 @@ button:active {
     background-color: var(--Deep-Bg);
     color: var(--Amber);
     box-shadow: 0 0 5px var(--Amber);
+}
+
+a {
+    color: var(--Clean-White);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    -webkit-transition: color 0.3s ease;
+    -moz-transition: color 0.3s ease;
+    -ms-transition: color 0.3s ease;
+    -o-transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.link-box {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
 }

@@ -15,3 +15,19 @@ export async function logar(email, senha) {
         throw new Error(error)
     }
 }
+
+export async function cadastrar(nome, email, senha) {
+    try {
+        const login = await fetch('https://localhost:3000/users', {
+            method: 'POST',
+            body: JSON.stringify({
+                nome: nome,
+                email: email,
+                senha: senha
+            })
+        })
+
+    } catch (error) {
+        throw new Error(error)
+    }
+}
