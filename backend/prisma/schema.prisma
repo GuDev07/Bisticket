@@ -49,8 +49,8 @@ model Ticket {
   id Int @id @default(autoincrement())
   titulo String
   descricao String
-  status EnumStatusTicket
-  prioridade EnumPrioridadeTicket
+  status EnumStatusTicket @default(aberto)
+  prioridade EnumPrioridadeTicket @default(baixa)
   criadoEm DateTime @default(now())
   atualizadoEm DateTime @updatedAt
   usuarioId Int
