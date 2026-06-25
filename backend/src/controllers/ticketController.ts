@@ -1,0 +1,98 @@
+import { Request, Response } from 'express';
+import { prisma } from '../config/prisma';
+
+function obterNivel(usuario: string): number {
+    if (usuario === "suporte_1") return 1;
+    if (usuario === "suporte_2") return 2;
+    if (usuario === "suporte_3") return 3;
+
+    return 0;
+};
+
+export async function criarTicket(req: Request, res: Response) {
+    if(!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" })
+    }
+
+    
+}
+
+export async function listarTickets(req: Request, res: Response) {
+    if(!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" })
+    }
+
+    const tipo = req.user?.tipo;
+    const id = req.user?.sub;
+
+    try{
+
+        if (tipo === "cliente") {
+           const ticket = await prisma.ticket.findMany({
+            where: {
+                usuarioId: Number(id)
+            }
+           });
+           return res.status(200).json(ticket)
+        }
+
+        const nivel = obterNivel(tipo);
+
+        const ticket = await prisma.ticket.findMany({
+            where: {
+                nivelSuporte: {
+                    lte: nivel
+                }
+            }
+        });
+
+        return res.status(200).json(ticket)
+
+    } catch(e) {
+        return res.status(500).json({ message: "Erro ao listar tickets", erro: e })
+    }
+}
+
+export async function escalarTicket(req: Request, res: Response) {
+    if(!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" })
+    } else if(req.user.tipo === "cliente") {
+        return res.status(403).json({ message: "Acesso negado" })
+    } else if(req.body.acao !== "escalar") {
+        return res.status(400).json({ message: "Ação inválida" })
+    };
+
+    const id = Number(req.params.id);
+
+    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do ticket não fornecido" });
+
+    try {
+        const ticketExistente = await prisma.ticket.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if(!ticketExistente) {
+            return res.status(404).json({ message: "Ticket não encontrado" })
+        } else if(ticketExistente.nivelSuporte > 2) {
+            return res.status(400).json({ message: "Ticket já está no nível máximo de suporte" })
+        } else if(ticketExistente.nivelSuporte !== obterNivel(req.user.tipo)) {
+            return res.status(403).json({ message: "Você não tem permissão para escalar este ticket" })
+        };
+
+        const ticket = await prisma.ticket.update({
+            where: {
+                id: id
+            },
+            data: {
+                nivelSuporte: {
+                    increment: 1
+                }
+            }
+        });
+        return res.status(200).json(ticket);
+    } catch(e) {
+        return res.status(500).json({ message: "Erro ao escalar ticket", erro: e })
+    }
+}

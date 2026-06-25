@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EnumTipoUsuario {
+  cliente
+  suporte_1
+  suporte_2
+  suporte_3
+}
+
+enum EnumStatusTicket {
+  aberto
+  em_andamento
+  resolvido
+  fechado
+}
+
+enum EnumPrioridadeTicket {
+  baixa
+  media
+  alta
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  tipo EnumTipoUsuario @default(cliente)
+  nome String
+  email String @unique
+  senha String
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  tickets Ticket[]
+  comentarios Comentario[]
+}
+
+model Ticket {
+  id Int @id @default(autoincrement())
+  titulo String
+  descricao String
+  status EnumStatusTicket
+  prioridade EnumPrioridadeTicket
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+  usuarioId Int
+  nivelSuporte Int @default(1)
+  resposta String?
+  respostaEm DateTime?
+
+  usuario User @relation(fields: [usuarioId], references: [id])
+
+  comentarios Comentario[]
+}
+
+model Comentario {
+  id Int @id @default(autoincrement())
+  texto String
+  criadoEm DateTime @default(now())
+  ticketId Int
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  usuarioId Int
+  usuario User @relation(fields: [usuarioId], references: [id])
+}
