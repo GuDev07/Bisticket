@@ -32,6 +32,41 @@ export async function criarTicket(req: Request, res: Response) {
     }
 }
 
+export async function comentarTicket(req: Request, res: Response) {
+    if(!req.user) {
+        return res.status(401).json({ message: "Usuário não autenticado" })
+    }
+
+    const id = Number(req.user?.sub);
+    if(!id || isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
+
+    const { comentario } = req.body;
+    const ticketId = Number(req.params.id);
+    if(!ticketId || isNaN(ticketId)) return res.status(400).json({ message: "ID do ticket não fornecido" });
+
+    try {
+        const ticketExistente = await prisma.ticket.findUnique({
+            where: {
+                id: ticketId
+            }
+        });
+        if(!ticketExistente) {
+            return res.status(404).json({ message: "Ticket não encontrado" })
+        }
+
+        const comentarioCriado = await prisma.comentario.create({
+            data: {
+                texto: comentario,
+                ticketId: ticketId,
+                usuarioId: id
+            }
+        })
+        return res.status(201).json(comentarioCriado);
+    } catch(e) {
+        return res.status(500).json({ message: "Erro ao comentar ticket", erro: e })
+    }
+}
+
 export async function listarTickets(req: Request, res: Response) {
     if(!req.user) {
         return res.status(401).json({ message: "Usuário não autenticado" })
