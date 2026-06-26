@@ -64,10 +64,18 @@ function carregarPagina(pagina) {
             return console.log("email ou senha não preenchidos")
         };
         const token = await logar(email, senha)
+        if(!token) {
+            throw new Error("Erro ao carregar token");
+            return;
+        }
+
+        console.log(token)
 
         localStorage.setItem('token', token);
 
-        window.location.href = '/tickets.html'
+        setTimeout(() => {
+            window.location.href = '/tickets.html'
+        }, 1500);
     });
 
     registerBtn.addEventListener('click', () => {

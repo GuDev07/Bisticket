@@ -4,8 +4,17 @@ import { prisma } from "../config/prisma";
 
 export async function listarUsuarios(req: Request, res: Response) {
     try {
-        const usuarios = await prisma.user.findMany();
-        return res.json(usuarios);
+        const usuario = await prisma.user.findUnique({
+            where: {
+                id: Number(req.user?.sub)
+            },
+            select: {
+                nome: true,
+                email: true,
+                tipo: true
+            }
+        });
+        return res.json(usuario);
     } catch (error) {
         return res.status(500).json({ error: 'Failed to fetch users' });
     }
@@ -15,7 +24,12 @@ export async function criarUsuario(req: Request, res: Response) {
     const { nome, email, senha } = req.body;
 
     try {
-        const hash = await argon2.hash(senha);
+        const hash = await argon2.hash(senha, {
+            type: argon2.argon2id,
+            memoryCost: 65536,
+            timeCost: 3,
+            parallelism: 4
+        });
         const usuario = await prisma.user.create({
             data: {
                 nome,

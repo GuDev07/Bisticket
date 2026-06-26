@@ -24,6 +24,7 @@ main {
     min-height: 100vh;
     width: 100%;
     padding: 1rem;
+    position: relative;
 }
 
 .inter-light {
@@ -60,6 +61,30 @@ main {
 .button-text {
     font-size: 1rem;
     color: var(--Clean-White);
+}
+
+.amber-text {
+    color: var(--Amber);
+}
+
+.purple-text {
+    color: var(--Bistech-Purple);
+}
+
+.cian-text {
+    color: var(--Cian-Accent);
+}
+
+.mint-text {
+    color: var(--Mint);
+}
+
+.white-text {
+    color: var(--Clean-White);
+}
+
+.black-text {
+    color: var(--Deep-Bg);
 }
 
 .purple-selection::selection {

@@ -2,15 +2,20 @@ const apiUrl = 'localhost:3000';
 
 export async function logar(email, senha) {
     try {
-        const login = await fetch(`https://${apiUrl}/auth/login`, {
+        const login = await fetch(`http://${apiUrl}/auth/login`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 email: email,
                 senha: senha
             })
         })
 
-        const token = await login.json().token;
+        const { token } = await login.json();
+
+        console.log(token)
 
         return token;
     } catch (error) {
@@ -20,8 +25,11 @@ export async function logar(email, senha) {
 
 export async function cadastrar(nome, email, senha) {
     try {
-        const login = await fetch(`https://${apiUrl}/users`, {
+        const login = await fetch(`http://${apiUrl}/users`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 nome: nome,
                 email: email,
@@ -29,6 +37,25 @@ export async function cadastrar(nome, email, senha) {
             })
         })
 
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function buscarDadosUsuario() {
+    const token = localStorage.getItem("token")
+    try {
+        const usuario = await fetch(`http://${apiUrl}/users/me`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+
+        const data = await usuario.json()
+
+        return data
     } catch (error) {
         throw new Error(error)
     }
