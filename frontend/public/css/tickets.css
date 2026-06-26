@@ -99,6 +99,8 @@
 }
 
 .pressed {
+    filter: brightness(0.75);
+    -webkit-filter: brightness(0.75);
     transform: scale(0.95);
     -webkit-transform: scale(0.95);
     -moz-transform: scale(0.95);
@@ -109,6 +111,7 @@
     -moz-transition: all 0.1;
     -ms-transition: all 0.1;
     -o-transition: all 0.1;
+    pointer-events: none;
 }
 
 .pressed:hover {
@@ -122,4 +125,112 @@
 .app{
     width: 100%;
     height: 100%;
+}
+
+.tickets {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.tickets__area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    overflow-y: auto;
+    justify-content: center;
+}
+
+.ticket {
+    position: relative;
+    min-width: 300px;
+    max-width: 500px;
+    width: auto;
+    min-height: 150px;
+    max-height: 300px;
+    height: auto;
+    border: 2px solid #ffffff0a;
+    background: linear-gradient(to bottom, #88888830, #88888800 95%);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    padding: 1rem;
+}
+
+.ticket::before {
+    position: absolute;
+    content: "";
+    top: -70%;
+    left: 10%;
+    width: 80%;
+    height: 100%;
+    border-radius: 12px;
+    background: radial-gradient(#ecdeff50 0%, #e8d7ff1f 10%,  #FF8C0000 70%);
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+}
+
+.ticket::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 12px;
+    background: linear-gradient(to right, #C8A0FF00 10%, #FFFFFF70 30%, #FFFFFF70 70%, #FF8C0000 90%);
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+}
+
+.ticket__status-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.ticket__status {
+    min-width: 100px;
+    height: 30px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    text-align: center;
+}
+
+.status-aberto {
+    color: var(--Bistech-Purple);
+    border: 1px solid var(--Bistech-Purple);
+}
+
+.status-em_andamento {
+    color: var(--Amber);
+    border: 1px solid var(--Amber);
+}
+
+.status-resolvido {
+    color: var(--Mint);
+    border: 1px solid var(--Mint);
+}
+
+.status-fechado {
+    color: var(--Clean-White);
+    border: 1px solid var(--Clean-White);
 }

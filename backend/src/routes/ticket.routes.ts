@@ -1,9 +1,10 @@
 import express from 'express';
 import { decidirAcao, listarTickets, criarTicket } from '../controllers/ticketController';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     await listarTickets(req, res);
 });
 
@@ -11,7 +12,7 @@ router.patch('/:id', async (req, res) => {
     await decidirAcao(req, res);
 });
 
-router.post('/', async (req, res) => {
+router.post('/create', authMiddleware, async (req, res) => {
     await criarTicket(req, res);
 });
 

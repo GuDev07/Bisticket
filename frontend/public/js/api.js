@@ -60,3 +60,21 @@ export async function buscarDadosUsuario() {
         throw new Error(error)
     }
 }
+
+export async function buscarTickets() {
+    const token = localStorage.getItem("token")
+    try {
+        const tickets = await fetch(`http://${apiUrl}/tickets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await tickets.json()
+        return data
+    } catch (error) {
+        throw new Error(error)
+    }
+}

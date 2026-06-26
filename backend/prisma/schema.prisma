@@ -39,7 +39,7 @@ model User {
   email String @unique
   senha String
   criadoEm DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+  atualizadoEm DateTime @updatedAt @default(now())
 
   tickets Ticket[]
   comentarios Comentario[]
@@ -52,7 +52,7 @@ model Ticket {
   status EnumStatusTicket @default(aberto)
   prioridade EnumPrioridadeTicket @default(baixa)
   criadoEm DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+  atualizadoEm DateTime @updatedAt @default(now())
   usuarioId Int
   nivelSuporte Int @default(1)
   resposta String?
