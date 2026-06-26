@@ -16,7 +16,9 @@ export async function carregarMeusTickets(container, usuario) {
                     <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
                 </div>
                 <div class="ticket__description-area">
-                    <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
+                    <div class="ticket__description-area--scroll">
+                        <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
+                    </div>
                 </div>
                 <button class="ticket__comments-button button-text">Mostrar Comentários</button>
             </div>

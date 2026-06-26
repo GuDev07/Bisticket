@@ -1,5 +1,13 @@
 import { buscarDadosUsuario } from "./api.js";
 import { carregarMeusTickets } from "./ui/myTickets.js";
+import { telaCriarTicket } from "./ui/createTicket.js";
+import { carregarDashboard } from "./ui/dashboard.js";
+
+const router = {
+    dashboard: carregarDashboard,
+    myTickets: carregarMeusTickets,
+    createTicket: telaCriarTicket
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const usuario = await buscarDadosUsuario();
@@ -16,9 +24,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     let telaAtual = 'dashboard'
 
     if (usuario.tipo === 'cliente') {
-        telaAtual = 'myTicket';
+        telaAtual = 'myTickets';
         sideBtn[0].style.display = 'none';
-        sideBtn[1].classList.add('pressed')
+        sideBtn[1].classList.add('pressed');
+        const tela = router[telaAtual];
+        tela(app, usuario.nome)
     };
     
     sideBtn.forEach((btn) => {
@@ -27,8 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (let i = 0; i < sideBtn.length; i++) {
                 sideBtn[i].classList.toggle('pressed', telaAtual == sideBtn[i].dataset.page)
             };
+            const tela = router[telaAtual];
+            tela(app, usuario.nome)
         })
     })
-
-    carregarMeusTickets(app, usuario.nome)
 })
