@@ -58,8 +58,6 @@ function carregarPagina(pagina) {
         const email = inputs[0].value;
         const senha = inputs[1].value;
         
-        console.log(email, senha)
-
         if (!email || !senha) {
             return console.log("email ou senha não preenchidos")
         };
@@ -68,8 +66,6 @@ function carregarPagina(pagina) {
             throw new Error("Erro ao carregar token");
             return;
         }
-
-        console.log(token)
 
         localStorage.setItem('token', token);
 

@@ -15,7 +15,6 @@ export async function logar(email, senha) {
 
         const { token } = await login.json();
 
-        console.log(token)
 
         return token;
     } catch (error) {
