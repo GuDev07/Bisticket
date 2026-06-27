@@ -12,7 +12,8 @@ const router = {
 document.addEventListener('DOMContentLoaded', async () => {
     const usuario = await buscarDadosUsuario();
 
-    if (!usuario) {
+    if (!usuario.tipo) {
+        window.location.href = './login.html'
         throw new Error("Usuário não autenticado")
         return
     }
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const app = document.querySelector('.app');
     
     const sideBtn = document.querySelectorAll('.sidebar__buttons--button');
+    const exitBtn = document.querySelector('.sidebar__buttons--exit-button')
     
     let telaAtual = 'dashboard'
 
@@ -40,5 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tela = router[telaAtual];
             tela(app, usuario.nome)
         })
+    })
+
+    exitBtn.addEventListener('click', () => {
+        localStorage.removeItem("token");
+        window.location.href = './login.html'
     })
 })
