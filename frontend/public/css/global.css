@@ -116,3 +116,18 @@ main {
     background-color: var(--Amber);
     color: var(--Deep-Bg);
 }
+
+.mint-selection::selection {
+    background-color: var(--Mint);
+    color: var(--Deep-Bg);
+}
+
+.mint-selection::-moz-selection {
+    background-color: var(--Mint);
+    color: var(--Deep-Bg);
+}
+
+.mint-selection::-webkit-selection {
+    background-color: var(--Mint);
+    color: var(--Deep-Bg);
+}

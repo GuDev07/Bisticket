@@ -24,14 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const exitBtn = document.querySelector('.sidebar__buttons--exit-button')
     
     let telaAtual = 'dashboard'
-
-    if (usuario.tipo === 'cliente') {
-        telaAtual = 'myTickets';
-        sideBtn[0].style.display = 'none';
-        sideBtn[1].classList.add('pressed');
-        const tela = router[telaAtual];
-        tela(app, usuario.nome)
-    };
     
     sideBtn.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -42,7 +34,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tela = router[telaAtual];
             tela(app, usuario.nome)
         })
+        if (!(usuario.tipo.includes(btn.dataset.role))) {
+            btn.style.display = "none"
+        }
     })
+
+    for(let i = 0; i < sideBtn.length; i++) {
+        if (sideBtn[i].style.display !== "none" && (sideBtn[i].dataset.page === "dashboard" || sideBtn[i].dataset.page === "myTickets")) {
+                sideBtn[i].click()
+            }
+    }
 
     exitBtn.addEventListener('click', () => {
         localStorage.removeItem("token");

@@ -15,15 +15,18 @@
                     <h1 class="title inter-bold amber-selection"><span class="purple-text purple-selection" data-text="Bis">Bis</span><span class="amber-text" data-text="ticket"><i class="amber-selection">ticket</i></span></h1>
                 </div>
                 <div class="sidebar__buttons">
-                    <button class="sidebar__buttons--button button-text pressed" data-page="dashboard">Dashboard</button>
-                    <button class="sidebar__buttons--button button-text" data-page="myTickets">Meus tickets</button>
-                    <button class="sidebar__buttons--button button-text" data-page="createTicket">Criar ticket</button>
+                    <button class="sidebar__buttons--button button-text pressed" data-role="suporte" data-page="dashboard">Dashboard</button>
+                    <button class="sidebar__buttons--button button-text" data-role="suporte" data-page="tickets">Tickets</button>
+                    <button class="sidebar__buttons--button button-text" data-role="cliente" data-page="myTickets">Meus tickets</button>
+                    <button class="sidebar__buttons--button button-text" data-role="cliente" data-page="createTicket">Criar ticket</button>
                 </div>
                 <div class="sidebar__options">
                     <button class="sidebar__buttons--exit-button button-text" data-page="exit">Sair</button>
                 </div>
             </div>
-            <div class="app"></div>
+            <div class="app__comments closed" id="app__comments"></div>
+            <div class="app">
+            </div>
         </div>
     </main>
     <script type="module" src="./js/tickets.js"></script>

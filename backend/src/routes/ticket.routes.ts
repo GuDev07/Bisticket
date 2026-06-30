@@ -8,7 +8,7 @@ router.post('/', authMiddleware, async (req, res) => {
     await listarTickets(req, res);
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', authMiddleware, async (req, res) => {
     await decidirAcao(req, res);
 });
 

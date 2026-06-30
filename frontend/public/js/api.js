@@ -77,3 +77,50 @@ export async function buscarTickets() {
         throw new Error(error)
     }
 }
+
+export async function buscarComentarios(id) {
+    const token = localStorage.getItem("token");    
+    try {
+        const comentarios = await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: 'ver_comentarios'
+            })
+        });
+
+        const data = await comentarios.json();
+
+        return data;
+
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function criarTicket(titulo, descricao, comentario) {
+    const token = localStorage.getItem("token");
+    try {
+        const ticketCriado = await fetch(`http://${apiUrl}/tickets/create`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                titulo: titulo,
+                descricao: descricao,
+                comentario: comentario || undefined
+            })
+        });
+
+        const data = await ticketCriado.json()
+
+        return data
+    } catch (error) {
+        throw new Error(error)
+    }
+}

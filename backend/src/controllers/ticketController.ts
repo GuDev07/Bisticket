@@ -24,6 +24,7 @@ export async function criarTicket(req: Request, res: Response) {
     if(isNaN(id)) return res.status(400).json({ message: "ID do usuário não fornecido" });
 
     const { titulo, descricao } = req.body;
+    const comentario = req.body.comentario;
     if(!titulo.trim() || !descricao.trim()) return res.status(400).json({ message: "Título ou descrição não fornecido" });
     try {
         const ticket = await prisma.ticket.create({
@@ -33,6 +34,18 @@ export async function criarTicket(req: Request, res: Response) {
                 usuarioId: id
             }
         })
+
+        if (comentario) {
+            await prisma.comentario.create({
+                data: {
+                    usuarioId: id,
+                    ticketId: ticket.id,
+                    texto: comentario
+                }
+            })
+            return res.status(201).json({ticket: ticket, comentario: comentario});
+        }
+
         return res.status(201).json(ticket);
     } catch(e) {
         return res.status(500).json({ message: "Erro ao criar ticket", erro: e })
