@@ -320,6 +320,7 @@ export async function reabrirTicket(req: Request, res: Response) {
 async function responderTicket(id: number, res: string) {
     if (!res.trim()) {
         throw new Error("Resposta inválida")
+        return false;
     }
 
     await prisma.ticket.update({

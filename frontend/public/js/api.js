@@ -152,3 +152,45 @@ export async function comentarTicket(id, comentario) {
         throw new Error(error)
     }
 }
+
+export async function resolverTicket(id) {
+    const token = localStorage.getItem("token");
+
+    try {
+        await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: 'resolver'
+            })
+        });
+
+        return;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function fecharTicket(id, resposta) {
+    const token = localStorage.getItem("token");
+    try {
+        await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: 'fechar',
+                resposta: resposta
+            })
+        });
+
+        return;
+    } catch (error) {
+        throw new Error(error)
+    }
+}

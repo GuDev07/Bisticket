@@ -1,12 +1,12 @@
-import { buscarComentarios, buscarTickets, comentarTicket } from "../api.js"
+import { buscarComentarios, buscarTickets, comentarTicket, resolverTicket } from "../api.js"
 
 function renderTickets(tickets, usuario) {
 
     if (usuario.tipo.startsWith("suporte")) {
-        const html = tickets.map(ticket =>`
+        const html = tickets.map(ticket => `
             <div class="ticket" data-status="${ticket.status}">
                 <div class="ticket__status-area">
-                    <span class="ticket__status status-${ticket.status}">${ticket.status}</span>
+                    <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
                 </div>
                 <div class="ticket__title-area">
                     <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
@@ -29,10 +29,10 @@ function renderTickets(tickets, usuario) {
         return html;
     }
 
-    const html = tickets.map(ticket =>`
-        <div class="ticket">
+    const html = tickets.map(ticket => `
+        <div class="ticket" data-status="${ticket.status}">
             <div class="ticket__status-area">
-                <span class="ticket__status status-${ticket.status}">${ticket.status}</span>
+                <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
             </div>
             <div class="ticket__title-area">
                 <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
@@ -70,7 +70,7 @@ export async function carregarMeusTickets(container, usuario) {
 
         btn.addEventListener('click', () => {
             const comentarioContainer = document.getElementById('app__comments');
-    
+
             abrirComentario(comentarioContainer, btn.dataset.id, btn)
             comentarioContainer.classList.toggle('closed', false)
             for (let i = 0; i < comentBtn.length; i++) {
@@ -82,14 +82,23 @@ export async function carregarMeusTickets(container, usuario) {
 
     container.querySelectorAll('.ticket').forEach(card => {
 
-        
-        const buttons = container.querySelectorAll('.ticket__button');
-        
+        const buttons = card.querySelectorAll('.ticket__button');
+
         buttons.forEach(btn => {
+            btn.style.display = "block"
             if (btn.dataset.status !== card.dataset.status) {
                 btn.style.display = "none";
             };
         });
+    });
+
+    const resolverBtn = document.querySelectorAll('#resolverTicket')
+
+    resolverBtn.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            await resolverTicket(btn.dataset.id)
+            carregarMeusTickets(container, usuario)
+        })
     });
 
 }

@@ -1,5 +1,13 @@
 const criarUsuarioBtn = document.querySelector('.create-user-button');
+const logoutBtn = document.getElementById('logout-button');
 const token = localStorage.getItem("token");
+
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem("token");
+    setTimeout(() => {
+        window.location.href = './login.html'
+    }, 500);
+})
 
 criarUsuarioBtn.addEventListener('click', async () => {
     const t = document.getElementById('tipo').value
