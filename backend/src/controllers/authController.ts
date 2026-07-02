@@ -26,7 +26,11 @@ export async function login(req: Request, res: Response) {
             tipo: usuario.tipo
         })
 
-        return res.status(200).json({ token: token })
+        if (usuario.tipo === "administrador") {
+            return res.status(200).json({ token: token, pagina: "ejf_capivara_admin" })    
+        }
+
+        return res.status(200).json({ token: token, pagina: "tickets" })
     } catch(e) {
         return res.status(500).json({ message: "Erro no servidor", erro: e })
     }

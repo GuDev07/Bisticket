@@ -12,4 +12,8 @@ router.post('/', (req, res) => {
   criarUsuario(req, res);
 });
 
+router.post('/admin/create', authMiddleware, (req, res) => {
+  criarUsuario(req, res);
+});
+
 export default router;

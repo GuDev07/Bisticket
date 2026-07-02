@@ -21,9 +21,29 @@ export async function listarUsuarios(req: Request, res: Response) {
 }
 
 export async function criarUsuario(req: Request, res: Response) {
+    const tipo = req.user?.tipo;
     const { nome, email, senha } = req.body;
 
     try {
+        if (tipo === "administrador") {
+            const tipoInformado = req.body.tipo;
+            const hash = await argon2.hash(senha, {
+                type: argon2.argon2id,
+                memoryCost: 65536,
+                timeCost: 3,
+                parallelism: 4
+            });
+            const usuario = await prisma.user.create({
+                data: {
+                    tipo: tipoInformado,
+                    nome,
+                    email,
+                    senha: hash
+                }
+            })
+            return res.status(201).json(usuario);
+        }
+        
         const hash = await argon2.hash(senha, {
             type: argon2.argon2id,
             memoryCost: 65536,

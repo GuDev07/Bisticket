@@ -3,9 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="shortcut icon" href="./assets/icons/bistech-icon.ico" type="image/x-icon">
     <title>Bisticket | Admin Painel</title>
 </head>
 <body>
-    
+    <main>
+        <div class="create__user__div">
+            <h1 class="inter-bold title-text mint-text purple-selection">Criar Usuário</h1>
+            <div id="create-user-form" class="create__user__form">
+                <input type="text" name="nome" id="nome" placeholder="Nome" required>
+                <input type="email" name="email" id="email" placeholder="Email" required>
+                <input type="password" name="senha" id="senha" placeholder="Senha" required>
+                <select name="tipo" id="tipo" required>
+                    <option value="" disabled selected>Tipo de Usuário</option>
+                    <option value="administrador">Administrador</option>
+                    <option value="cliente">Usuário</option>
+                    <option value="suporte_1">Suporte N1</option>
+                    <option value="suporte_2">Suporte N2</option>
+                    <option value="suporte_3">Suporte N3</option>
+                </select>
+                <button class="sendButton create-user-button" type="submit">Criar Usuário</button>
+            </div>
+            <div id="message" class="message"></div>
+        </div>
+    </main>
+
+    <script src="./js/admin.js"></script>
 </body>
 </html>

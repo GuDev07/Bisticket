@@ -13,10 +13,14 @@ export async function logar(email, senha) {
             })
         })
 
-        const { token } = await login.json();
+        const { token, pagina } = await login.json();
 
+        const data = {
+            token,
+            pagina
+        }
 
-        return token;
+        return data ;
     } catch (error) {
         throw new Error(error)
     }
