@@ -196,7 +196,7 @@ export async function escalarTicket(req: Request, res: Response) {
             return res.status(403).json({ message: "Você não tem permissão para escalar este ticket" })
         };
 
-        const ticket = await prisma.ticket.update({
+        await prisma.ticket.update({
             where: {
                 id: id
             },
@@ -272,7 +272,16 @@ export async function fecharTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Operação inválida" })
         }
 
-        await responderTicket(id, req.body.resposta);
+        await prisma.ticket.update({
+            where: {
+                id: id
+            },
+            data: {
+                resposta: req.body.resposta,
+                respostaEm: new Date(),
+                status: "fechado"
+            }
+        });
 
         return res.status(200).json({ message: "Ticket fechado" })
     } catch (e) {
@@ -323,13 +332,5 @@ async function responderTicket(id: number, res: string) {
         return false;
     }
 
-    await prisma.ticket.update({
-        where: {
-            id: id
-        },
-        data: {
-            resposta: res,
-            status: "fechado"
-        }
-    });
+    
 }

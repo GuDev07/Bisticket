@@ -1,4 +1,4 @@
-import { buscarComentarios, buscarTickets, comentarTicket, resolverTicket } from "../api.js"
+import { buscarComentarios, buscarTickets, comentarTicket, fecharTicket, resolverTicket } from "../api.js"
 
 function renderTickets(tickets, usuario) {
 
@@ -42,7 +42,7 @@ function renderTickets(tickets, usuario) {
                     <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
                 </div>
             </div>
-            <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}">Mostrar Comentários</button>
+            <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
         </div>
         `
     ).join('');
@@ -90,20 +90,60 @@ export async function carregarMeusTickets(container, usuario) {
                 btn.style.display = "none";
             };
         });
-    });
-
-    const resolverBtn = document.querySelectorAll('#resolverTicket')
-
-    resolverBtn.forEach(btn => {
-        btn.addEventListener('click', async () => {
+        const resolverBtn = card.querySelector('#resolverTicket')
+        const fecharBtn = card.querySelector('#fecharTicket')
+        const abrirBtn = card.querySelector('#abrirTicket')
+    
+        resolverBtn.addEventListener('click', async () => {
             await resolverTicket(btn.dataset.id)
             carregarMeusTickets(container, usuario)
+        });
+
+        fecharBtn.addEventListener('click', () => {
+            modalFecharTicket(fecharBtn.dataset.id, container, usuario)
         })
     });
 
+
 }
 
-export async function abrirComentario(container, id, button) {
+async function modalFecharTicket(id, container, usuario) {
+    const modal = document.getElementById('app__closeTicket');
+
+    modal.innerHTML = `
+        <div class="app__closeTicket--content">
+            <h1 class="app__closeTicket--content--title inter-bold mint-text mint-selection">Fechar ticket</h1>
+            <label for="closeTicketResponse" class="inter-regular white-text mint-selection">Resposta:</label>
+            <textarea id="closeTicketResponse" class="app__closeTicket--content--textarea white-text amber-selection" placeholder="Escreva a resposta final do ticket..."></textarea>
+            <div class="app__closeTicket--content--buttons">
+                <button class="app__closeTicket--content--buttons--button button-text" id="closeTicketButton">Fechar ticket</button>
+                <button class="app__closeTicket--content--buttons--button button-text" id="cancelCloseTicketButton">Cancelar</button>
+            </div>
+        </div>
+    `;
+
+    const confirmBtn = document.getElementById('closeTicketButton');
+    const cancelBtn = document.getElementById('cancelCloseTicketButton');
+
+    modal.classList.remove("closed");
+
+    cancelBtn.addEventListener('click', () => {
+        modal.classList.add("closed")
+        modal.innerHTML = '';
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        const ticketRes = document.getElementById('closeTicketResponse').value.trim();
+        if (!ticketRes) {
+            throw new Error("Resposta do ticket vazia")
+        }
+        await fecharTicket(id, ticketRes);
+        cancelBtn.click();
+        carregarMeusTickets(container, usuario);
+    });
+}
+
+async function abrirComentario(container, id, button) {
     container.innerHTML = ''
 
     const comentarios = await buscarComentarios(id);

@@ -56,6 +56,8 @@ model Ticket {
   atualizadoEm DateTime @updatedAt @default(now())
   usuarioId Int
   nivelSuporte Int @default(1)
+  resposta String?
+  respostaEm DateTime? @default(now())
 
   usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
