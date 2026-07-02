@@ -14,7 +14,20 @@ export async function listarUsuarios(req: Request, res: Response) {
                 tipo: true
             }
         });
-        return res.json(usuario);
+
+        let pagina: string = 'tickets';
+        if (usuario?.tipo === "administrador") {
+            pagina = 'ejf_capivara_admin';
+        }
+
+        const data = {
+            tipo: usuario?.tipo,
+            nome: usuario?.nome,
+            email: usuario?.email,
+            pagina: pagina
+        }
+
+        return res.json(data);
     } catch (error) {
         return res.status(500).json({ error: 'Failed to fetch users' });
     }

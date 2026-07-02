@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error("Usuário não autenticado")
         return
     } else if (usuario.tipo === 'administrador') {
-        window.location.href = './ejf_capivara_admin.html'
+        window.location.href = `./${usuario.pagina}.html`
     }
 
     const app = document.querySelector('.app');
