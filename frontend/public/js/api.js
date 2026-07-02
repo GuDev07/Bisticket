@@ -124,3 +124,27 @@ export async function criarTicket(titulo, descricao, comentario) {
         throw new Error(error)
     }
 }
+
+export async function comentarTicket(id, comentario) {
+    const token = localStorage.getItem("token");
+
+    try {
+        const coment = await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: 'comentar',
+                comentario: comentario
+            })
+        })
+
+        const data = await coment.json();
+
+        return data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}

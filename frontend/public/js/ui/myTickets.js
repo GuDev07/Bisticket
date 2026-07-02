@@ -1,14 +1,10 @@
-import { buscarComentarios, buscarTickets } from "../api.js"
+import { buscarComentarios, buscarTickets, comentarTicket } from "../api.js"
 
-export async function carregarMeusTickets(container, usuario) {
-    container.innerHTML = ''
+function renderTickets(tickets, usuario) {
 
-    const tickets = await buscarTickets();
-    let htmlTicketBoxes = ``;
-
-    tickets.forEach(ticket => {
-        htmlTicketBoxes += `
-            <div class="ticket">
+    if (usuario.tipo.startsWith("suporte")) {
+        const html = tickets.map(ticket =>`
+            <div class="ticket" data-status="${ticket.status}">
                 <div class="ticket__status-area">
                     <span class="ticket__status status-${ticket.status}">${ticket.status}</span>
                 </div>
@@ -20,35 +16,85 @@ export async function carregarMeusTickets(container, usuario) {
                         <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
                     </div>
                 </div>
-                <button class="ticket__comments-button button-text" id="mostrarComentario" data-id="${ticket.id}">Mostrar Comentários</button>
+                <div class="ticket__buttons">
+                    <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
+                    <button class="ticket__button resolveTicket-button button-text" id="resolverTicket" data-id="${ticket.id}" data-status="aberto">Resolver</button>
+                    <button class="ticket__button closeTicket-button button-text" id="fecharTicket" data-id="${ticket.id}" data-status="em_andamento">Fechar</button>
+                    <button class="ticket__button openTicket-button button-text" id="abrirTicket" data-id="${ticket.id}" data-status="fechado">Reabrir</button>
+                </div>
             </div>
-        `;
-    });
+            `
+        ).join('');
+
+        return html;
+    }
+
+    const html = tickets.map(ticket =>`
+        <div class="ticket">
+            <div class="ticket__status-area">
+                <span class="ticket__status status-${ticket.status}">${ticket.status}</span>
+            </div>
+            <div class="ticket__title-area">
+                <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+            </div>
+            <div class="ticket__description-area">
+                <div class="ticket__description-area--scroll">
+                    <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
+                </div>
+            </div>
+            <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}">Mostrar Comentários</button>
+        </div>
+        `
+    ).join('');
+
+    return html;
+}
+
+export async function carregarMeusTickets(container, usuario) {
+    container.innerHTML = ''
+
+    const tickets = await buscarTickets();
 
     container.innerHTML = `
         <div class="tickets">
-            <h1 class="tickets-title inter-bold title purple-selection">Olá <span class="purple-text purple-selection">${usuario}</span></h1>
+            <h1 class="tickets-title inter-bold title purple-selection">Olá <span class="purple-text purple-selection">${usuario.nome}</span></h1>
             <div class="tickets__area">
-                ${htmlTicketBoxes}
+                ${renderTickets(tickets, usuario)}
             </div>
         </div>
     `;
 
-    const comentBtn = container.querySelectorAll('.ticket__comments-button');
+    const comentBtn = container.querySelectorAll('.comments-button');
 
     comentBtn.forEach(btn => {
 
         btn.addEventListener('click', () => {
             const comentarioContainer = document.getElementById('app__comments');
     
-            abrirComentario(comentarioContainer, btn.dataset.id)
+            abrirComentario(comentarioContainer, btn.dataset.id, btn)
             comentarioContainer.classList.toggle('closed', false)
+            for (let i = 0; i < comentBtn.length; i++) {
+                comentBtn[i].disabled = false
+            };
+            btn.disabled = true;
         })
     })
 
+    container.querySelectorAll('.ticket').forEach(card => {
+
+        
+        const buttons = container.querySelectorAll('.ticket__button');
+        
+        buttons.forEach(btn => {
+            if (btn.dataset.status !== card.dataset.status) {
+                btn.style.display = "none";
+            };
+        });
+    });
+
 }
 
-export async function abrirComentario(container, id) {
+export async function abrirComentario(container, id, button) {
     container.innerHTML = ''
 
     const comentarios = await buscarComentarios(id);
@@ -65,7 +111,7 @@ export async function abrirComentario(container, id) {
             <div class="ticket__comment">
                 <div class="ticket__comment__user-area">
                     <span class="ticket-title inter-bold white-text purple-selection">${coment.usuario.nome.trim()}</span>
-                    <span class="ticket__status status-${coment.usuario.tipo} mint-selection">${coment.usuario.tipo}</span>
+                    <span class="ticket__status status-${tipo} mint-selection">${tipo}</span>
                 </div>
                 <div class="ticket__description-area">
                     <div class="ticket__description-area--scroll">
@@ -83,15 +129,33 @@ export async function abrirComentario(container, id) {
                 <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g opacity="0.4"> <path d="M9.16992 14.8299L14.8299 9.16992" stroke="#f5f5Ef" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14.8299 14.8299L9.16992 9.16992" stroke="#f5f5Ef" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g> <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="#f5f5Ef" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
             </button>
         </div>
-        <div class="app__comments-comments__area">
-            ${htmlTicketBoxes}
+        <div class="app__comments-comments__area-scroll">
+            <div class="app__comments-comments__area">
+                ${htmlTicketBoxes}
+            </div>
+        </div>
+        <div class="app__comments-user-input-area">
+            <div class="app__comments-comment-textarea">
+                <textarea name="comment" id="comment-textarea" class="white-text amber-selection"></textarea>
+            </div>
+            <button class="add-comment-button button-text">Enviar</button>
         </div>
     `;
+
+    const enviarBtn = container.querySelector('.add-comment-button')
+
+    enviarBtn.addEventListener('click', async () => {
+        const comentario = container.querySelector('#comment-textarea').value.trim();
+
+        await comentarTicket(id, comentario);
+        await abrirComentario(container, id, button);
+    })
 
     const closeBtn = container.querySelector('#close-button');
     closeBtn.addEventListener('click', () => {
         container.innerHTML = '';
         container.classList.add('closed')
+        button.disabled = false;
     })
 }
 

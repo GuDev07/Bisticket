@@ -17,6 +17,7 @@ enum EnumTipoUsuario {
   suporte_1
   suporte_2
   suporte_3
+  administrador
 }
 
 enum EnumStatusTicket {
@@ -55,10 +56,8 @@ model Ticket {
   atualizadoEm DateTime @updatedAt @default(now())
   usuarioId Int
   nivelSuporte Int @default(1)
-  resposta String?
-  respostaEm DateTime?
 
-  usuario User @relation(fields: [usuarioId], references: [id])
+  usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   comentarios Comentario[]
 }
@@ -68,7 +67,7 @@ model Comentario {
   texto String
   criadoEm DateTime @default(now())
   ticketId Int
-  ticket Ticket @relation(fields: [ticketId], references: [id])
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   usuarioId Int
-  usuario User @relation(fields: [usuarioId], references: [id])
+  usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }

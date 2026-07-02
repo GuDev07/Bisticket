@@ -1,3 +1,3 @@
-export async function carregarDashboard(container) {
-    
+export async function carregarDashboard(container, usuario) {
+    container.innerHTML = '';
 }

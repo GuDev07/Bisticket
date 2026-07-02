@@ -13,7 +13,7 @@
 
 .sidebar{
     height: 100%;
-    width: 15vw;
+    width: 15dvw;
     border-right: 2px solid var(--Bistech-Purple);
     padding: 2rem 1rem;
     display: grid;
@@ -380,7 +380,15 @@
     -o-border-radius: 12px;
 }
 
-.ticket__comments-button {
+.ticket__buttons {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem
+}
+
+.ticket__button {
     position: relative;
     width: 100%;
     border-radius: 8px;
@@ -402,7 +410,7 @@
     overflow: hidden;
 }
 
-.ticket__comments-button::before{
+.ticket__button::before{
     position: absolute;
     content: "";
     top: -40%;
@@ -417,7 +425,7 @@
     -o-border-radius: 8px;
 }
 
-.ticket__comments-button::after{
+.ticket__button::after{
     position: absolute;
     content: "";
     top: 0;
@@ -432,7 +440,7 @@
     -o-border-radius: 8px;
 }
 
-.ticket__comments-button:hover {
+.ticket__button:hover {
     transform: scale(1.02);
     -webkit-transform: scale(1.02);
     -moz-transform: scale(1.02);
@@ -440,7 +448,7 @@
     -o-transform: scale(1.02);
 }
 
-.ticket__comments-button:active {
+.ticket__button:active {
     transform: scale(1);
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
@@ -468,7 +476,7 @@
     border: 2px solid var(--Amber);
 }
 
-#description {
+textarea {
     width: 100%;
     height: 100px;
     max-height: 100%;
@@ -486,7 +494,7 @@
     -o-border-radius: 8px;
 }
 
-#description:focus {
+textarea:focus {
     outline: none;
     border: 2px solid var(--Amber);
 }
@@ -515,7 +523,25 @@
 }
 
 .add-comment-button {
-    margin-bottom: 0.5rem;
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    height: 40px;
+    border: 1px solid #ffffff0a;
+    background-color: #88888830;
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    overflow: hidden;
 }
 
 .add-comment-button::before{
@@ -531,6 +557,37 @@
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
+}
+
+.add-comment-button::after{
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4%;
+    border-radius: 8px;
+    background: linear-gradient(to right, #C8A0FF00 10%, #FFFFFF70 30%, #FFFFFF70 70%, #FF8C0000 90%);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.add-comment-button:hover {
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+}
+
+.add-comment-button:active {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
 }
 
 .create-button::before{
@@ -550,8 +607,8 @@
 
 .app__comments {
     position: relative;
-    top: 10vh;
-    left: 2vw;
+    top: 10dvh;
+    left: 2dvw;
     /* transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
@@ -566,9 +623,8 @@
     max-width: 500px;
     min-width: 300px;
     width: 100%;
-    max-height: 80vh;
-    min-height: 300px;
-    height: auto;
+    max-height: 80dvh;
+    height: 80dvh;
     background-color: var(--Deep-Bg);
     z-index: 99;
     transition: all 0.2s ease-in-out;
@@ -576,6 +632,8 @@
     -moz-transition: all 0.2s ease-in-out;
     -ms-transition: all 0.2s ease-in-out;
     -o-transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .app__comments-header {
@@ -585,6 +643,7 @@
     padding: 0.5rem 1rem;
     pointer-events: all;
     border-bottom: 1px solid #FFFFFF0F;
+    height: 50px;
 }
 
 .app__comments-header .close-button {
@@ -593,6 +652,14 @@
 
 .app__comments-comments__area {
     padding: 1rem 1.5rem;
+}
+
+.app__comments-comments__area-scroll {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 0.5rem;
 }
 
 .ticket__comment {
@@ -619,9 +686,43 @@
     margin-left: 1rem;
 }
 
+.app__comments-user-input-area{
+    width: 100%;
+    height: auto;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #FFFFFF0F;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
+.app__comments-user-input-area .add-comment-button {
+    width: 100px;
+    height: 40px;
+}
+
+.app__comments-comment-textarea {
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    padding: 2px 5px;
+    transition: all 0.1s ease-in;
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    -ms-transition: all 0.1s ease-in;
+    -o-transition: all 0.1s ease-in;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border: 1px solid #FFFFFF7F;
+}
+
 .closed {
-    top: 10vh;
-    left: 2vw;
+    top: 10dvh;
+    left: 2dvw;
     /* transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);

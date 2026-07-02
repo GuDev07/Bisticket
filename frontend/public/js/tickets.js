@@ -12,10 +12,12 @@ const router = {
 document.addEventListener('DOMContentLoaded', async () => {
     const usuario = await buscarDadosUsuario();
 
-    if (!usuario.tipo) {
+    if (!usuario || !usuario.tipo) {
         window.location.href = './login.html'
         throw new Error("Usuário não autenticado")
         return
+    } else if (usuario.tipo === 'administrador') {
+        window.location.href = './ejf_capivara_admin.html'
     }
 
     const app = document.querySelector('.app');
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 sideBtn[i].classList.toggle('pressed', telaAtual == sideBtn[i].dataset.page)
             };
             const tela = router[telaAtual];
-            tela(app, usuario.nome)
+            tela(app, usuario)
         })
         if (!(usuario.tipo.includes(btn.dataset.role))) {
             btn.style.display = "none"
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     for(let i = 0; i < sideBtn.length; i++) {
         if (sideBtn[i].style.display !== "none" && (sideBtn[i].dataset.page === "dashboard" || sideBtn[i].dataset.page === "myTickets")) {
                 sideBtn[i].click()
+                break;
             }
     }
 
