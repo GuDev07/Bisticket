@@ -194,3 +194,44 @@ export async function fecharTicket(id, resposta) {
         throw new Error(error)
     }
 }
+
+export async function abrirTicket(id) {
+    const token = localStorage.getItem("token");
+    try {
+        await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: 'abrir',
+            })
+        });
+
+        return;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function escalarTicket(id) {
+    const token = localStorage.getItem("token");
+
+    try {
+        await fetch(`http://${apiUrl}/tickets/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                acao: "escalar"
+            })
+        });
+
+        return;
+    } catch (error) {
+        throw new Error(error)
+    }
+}

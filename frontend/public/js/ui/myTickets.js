@@ -1,4 +1,4 @@
-import { buscarComentarios, buscarTickets, comentarTicket, fecharTicket, resolverTicket } from "../api.js"
+import { abrirTicket, buscarComentarios, buscarTickets, comentarTicket, escalarTicket, fecharTicket, resolverTicket } from "../api.js"
 
 function renderTickets(tickets, usuario) {
 
@@ -6,18 +6,16 @@ function renderTickets(tickets, usuario) {
         const html = tickets.map(ticket => `
             <div class="ticket" data-status="${ticket.status}">
                 <div class="ticket__status-area">
+                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
                     <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
                 </div>
                 <div class="ticket__title-area">
-                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
-                </div>
-                <div class="ticket__description-area">
-                    <div class="ticket__description-area--scroll">
-                        <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
-                    </div>
+                    <h1 class="ticket-title inter-bold purple-text purple-selection">Enviado por: ${ticket.usuario.nome}</h1>
+                    <h1 class="ticket-title inter-bold amber-text amber-selection">ID: ${ticket.usuarioId}</h1>
                 </div>
                 <div class="ticket__buttons">
                     <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
+                    <button class="details-button button-text" id="verDetalhes" data-id="${ticket.id}" data-status="${ticket.status}">Ver Detalhes</button>
                     <button class="ticket__button resolveTicket-button button-text" id="resolverTicket" data-id="${ticket.id}" data-status="aberto">Resolver</button>
                     <button class="ticket__button closeTicket-button button-text" id="fecharTicket" data-id="${ticket.id}" data-status="em_andamento">Fechar</button>
                     <button class="ticket__button openTicket-button button-text" id="abrirTicket" data-id="${ticket.id}" data-status="fechado">Reabrir</button>
@@ -30,24 +28,92 @@ function renderTickets(tickets, usuario) {
     }
 
     const html = tickets.map(ticket => `
-        <div class="ticket" data-status="${ticket.status}">
+        <div class="ticket" data-id="${ticket.id}" data-status="${ticket.status}">
             <div class="ticket__status-area">
+                <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
                 <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
             </div>
-            <div class="ticket__title-area">
-                <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+            <div class="ticket__buttons">
+                <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
+                <button class="details-button button-text" id="verDetalhes" data-id="${ticket.id}" data-status="${ticket.status}">Ver Detalhes</button>
             </div>
-            <div class="ticket__description-area">
-                <div class="ticket__description-area--scroll">
-                    <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
-                </div>
-            </div>
-            <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
         </div>
         `
     ).join('');
 
     return html;
+}
+
+function ticketDetails(ticket, usuario, container) {
+    let html = '';
+
+    if (usuario.tipo.startsWith("suporte")) {
+        html = `
+            <div class="ticket" data-id="${ticket.id}" data-status="${ticket.status}">
+                <div class="ticket__status-area">
+                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+                    <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
+                </div>
+                <h2 class="ticket-title inter-bold mint-text mint-selection">Descrição:</h2>
+                <div class="ticket__description-area">
+                    <div class="ticket__description-area--scroll">
+                        <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
+                    </div>
+                </div>
+                <h2 class="ticket-title inter-bold cian-text cian-selection">Resposta:</h2>
+                <div class="ticket__response-area">
+                    <div class="ticket__response-area--scroll">
+                        <p class="ticket-response inter-regular white-text amber-selection">${ticket.resposta? ticket.resposta : "Sem resposta"}</p>
+                    </div>
+                </div>
+                <div class="ticket__buttons">
+                <button class="ticket__button close-button button-text" id="closeDetails" data-id="${ticket.id}" data-status="${ticket.status}">Fechar</button>
+                <button class="ticket__button scale-button button-text" id="escalarTicket" data-id="${ticket.id}" data-status="${ticket.status}">Escalar</button>
+                </div>
+            </div>
+        `;
+    } else {
+        html = html = `
+            <div class="ticket" data-id="${ticket.id}" data-status="${ticket.status}">
+                <div class="ticket__status-area">
+                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+                    <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
+                </div>
+                <h2 class="ticket-title inter-bold mint-text mint-selection">Descrição:</h2>
+                <div class="ticket__description-area">
+                    <div class="ticket__description-area--scroll">
+                        <p class="ticket-description inter-regular white-text amber-selection">${ticket.descricao}</p>
+                    </div>
+                </div>
+                <h2 class="ticket-title inter-bold cian-text cian-selection">Resposta:</h2>
+                <div class="ticket__response-area">
+                    <div class="ticket__response-area--scroll">
+                        <p class="ticket-response inter-regular white-text amber-selection">${ticket.resposta? ticket.resposta : "Sem resposta"}</p>
+                    </div>
+                </div>
+                <div class="ticket__buttons">
+                    <button class="ticket__button comments-button button-text" id="closeDetails" data-id="${ticket.id}" data-status="${ticket.status}">Fechar</button>
+                </div>
+            </div>
+        `;
+    }
+
+    const modal = document.getElementById('app__ticketDetails');
+
+    modal.innerHTML = html;
+    modal.classList.remove("closed");
+
+    document.getElementById('closeDetails').addEventListener('click', () => {
+        modal.classList.add("closed");
+        modal.innerHTML = '';
+    });
+
+    document.getElementById('escalarTicket').addEventListener('click', async () => {
+        await escalarTicket(ticket.id);
+        modal.classList.add("closed");
+        modal.innerHTML = '';
+        carregarMeusTickets(container, usuario);
+    });
 }
 
 export async function carregarMeusTickets(container, usuario) {
@@ -80,6 +146,13 @@ export async function carregarMeusTickets(container, usuario) {
         })
     })
 
+    container.querySelectorAll('.details-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const ticket = tickets.find(t => t.id == btn.dataset.id);
+            ticketDetails(ticket, usuario, container);
+        });
+    });
+
     container.querySelectorAll('.ticket').forEach(card => {
 
         const buttons = card.querySelectorAll('.ticket__button');
@@ -95,16 +168,19 @@ export async function carregarMeusTickets(container, usuario) {
         const abrirBtn = card.querySelector('#abrirTicket')
     
         resolverBtn.addEventListener('click', async () => {
-            await resolverTicket(btn.dataset.id)
+            await resolverTicket(resolverBtn.dataset.id)
             carregarMeusTickets(container, usuario)
         });
 
         fecharBtn.addEventListener('click', () => {
             modalFecharTicket(fecharBtn.dataset.id, container, usuario)
         })
+
+        abrirBtn.addEventListener('click', async () => {
+            await abrirTicket(abrirBtn.dataset.id)
+            carregarMeusTickets(container, usuario)
+        })
     });
-
-
 }
 
 async function modalFecharTicket(id, container, usuario) {

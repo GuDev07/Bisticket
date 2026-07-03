@@ -158,6 +158,14 @@ export async function listarTickets(req: Request, res: Response) {
                 nivelSuporte: {
                     lte: nivel
                 }
+            },
+            include: {
+                usuario: {
+                    select: {
+                        nome: true,
+                        tipo: true
+                    }
+                }
             }
         });
 
@@ -194,6 +202,8 @@ export async function escalarTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Ticket já está no nível máximo de suporte" })
         } else if(ticketExistente.nivelSuporte !== obterNivel(req.user.tipo)) {
             return res.status(403).json({ message: "Você não tem permissão para escalar este ticket" })
+        } else if(ticketExistente.status === "fechado") {
+            return res.status(400).json({ message: "O ticket já foi finalizado" })
         };
 
         await prisma.ticket.update({
