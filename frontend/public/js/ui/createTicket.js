@@ -22,7 +22,9 @@ export async function telaCriarTicket(container) {
                         <textarea name="description" id="commentary" class="ticket-description inter-regular white-text amber-selection" placeholder="Digite o comentário"></textarea>
                     </div>
                 </div>
-                <button class="ticket__button create-button button-text">Criar</button>
+                <div class="ticket__buttons">
+                    <button class="ticket__button create-button button-text">Criar</button>
+                </div>
             </div>
         </div>
     `;

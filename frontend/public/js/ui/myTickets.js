@@ -1,5 +1,9 @@
 import { abrirTicket, buscarComentarios, buscarTickets, comentarTicket, escalarTicket, fecharTicket, resolverTicket } from "../api.js"
 
+const tokenJWT = localStorage.getItem("token");
+
+const eventSource = new EventSource(`http://localhost:3000/tickets/stream?token=${tokenJWT}`);
+
 function renderTickets(tickets, usuario) {
 
     if (usuario.tipo.startsWith("suporte")) {
@@ -44,6 +48,44 @@ function renderTickets(tickets, usuario) {
     return html;
 }
 
+function adicionarTicket(container, ticket) {
+    if (usuario.tipo.startsWith("suporte")) {
+        container.innerHTML += `
+            <div class="ticket" data-status="${ticket.status}">
+                <div class="ticket__status-area">
+                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+                    <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
+                </div>
+                <div class="ticket__title-area">
+                    <h1 class="ticket-title inter-bold purple-text purple-selection">Enviado por: ${ticket.usuario.nome}</h1>
+                    <h1 class="ticket-title inter-bold amber-text amber-selection">ID: ${ticket.usuarioId}</h1>
+                </div>
+                <div class="ticket__buttons">
+                    <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
+                    <button class="details-button button-text" id="verDetalhes" data-id="${ticket.id}" data-status="${ticket.status}">Ver Detalhes</button>
+                    <button class="ticket__button resolveTicket-button button-text" id="resolverTicket" data-id="${ticket.id}" data-status="aberto">Resolver</button>
+                    <button class="ticket__button closeTicket-button button-text" id="fecharTicket" data-id="${ticket.id}" data-status="em_andamento">Fechar</button>
+                    <button class="ticket__button openTicket-button button-text" id="abrirTicket" data-id="${ticket.id}" data-status="fechado">Reabrir</button>
+                </div>
+            </div>
+        `;
+    } else {
+
+        container.innerHTML += `
+            <div class="ticket" data-id="${ticket.id}" data-status="${ticket.status}">
+                <div class="ticket__status-area">
+                    <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
+                    <span class="ticket__status status-${ticket.status}">${ticket.status == 'em_andamento' ? 'Em andamento' : ticket.status}</span>
+                </div>
+                <div class="ticket__buttons">
+                    <button class="ticket__button comments-button button-text" id="mostrarComentario" data-id="${ticket.id}" data-status="${ticket.status}">Mostrar Comentários</button>
+                    <button class="details-button button-text" id="verDetalhes" data-id="${ticket.id}" data-status="${ticket.status}">Ver Detalhes</button>
+                </div>
+            </div>
+        `;
+    }
+}
+
 function ticketDetails(ticket, usuario, container) {
     let html = '';
 
@@ -73,7 +115,7 @@ function ticketDetails(ticket, usuario, container) {
             </div>
         `;
     } else {
-        html = html = `
+        html = `
             <div class="ticket" data-id="${ticket.id}" data-status="${ticket.status}">
                 <div class="ticket__status-area">
                     <h1 class="ticket-title inter-bold white-text purple-selection">${ticket.titulo}</h1>
@@ -112,7 +154,6 @@ function ticketDetails(ticket, usuario, container) {
         await escalarTicket(ticket.id);
         modal.classList.add("closed");
         modal.innerHTML = '';
-        carregarMeusTickets(container, usuario);
     });
 }
 
@@ -169,7 +210,6 @@ export async function carregarMeusTickets(container, usuario) {
     
         resolverBtn.addEventListener('click', async () => {
             await resolverTicket(resolverBtn.dataset.id)
-            carregarMeusTickets(container, usuario)
         });
 
         fecharBtn.addEventListener('click', () => {
@@ -178,9 +218,27 @@ export async function carregarMeusTickets(container, usuario) {
 
         abrirBtn.addEventListener('click', async () => {
             await abrirTicket(abrirBtn.dataset.id)
-            carregarMeusTickets(container, usuario)
         })
     });
+        eventSource.addEventListener('ticket_criado', (event) => {
+            carregarMeusTickets(container, usuario)
+        })
+
+        eventSource.addEventListener('ticket_resolvido', (event) => {
+            carregarMeusTickets(container, usuario)
+        })
+
+        eventSource.addEventListener('ticket_fechado', (event) => {
+            carregarMeusTickets(container, usuario)
+        })
+
+        eventSource.addEventListener('ticket_aberto', (event) => {
+            carregarMeusTickets(container, usuario)
+        })
+
+    eventSource.onerror = function (event) {
+        console.log("Erro na conexão", event)
+    }
 }
 
 async function modalFecharTicket(id, container, usuario) {
@@ -215,7 +273,6 @@ async function modalFecharTicket(id, container, usuario) {
         }
         await fecharTicket(id, ticketRes);
         cancelBtn.click();
-        carregarMeusTickets(container, usuario);
     });
 }
 

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-interface TokenPayLoad{
+export interface TokenPayLoad{
     sub: string,
     tipo: string
 };
@@ -10,4 +10,10 @@ export function gerarToken(payload: TokenPayLoad, expiresIn: jwt.SignOptions["ex
 
     return jwt.sign(payload, secretKey, {expiresIn: expiresIn})
 
+}
+
+export function verificarToken(payload: string) {
+    const cliente = jwt.verify(payload, process.env.JWT_SECRET!)
+
+    return cliente;
 }

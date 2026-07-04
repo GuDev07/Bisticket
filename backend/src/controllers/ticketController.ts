@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
-import { json } from 'node:stream/consumers';
+
+import { emitirEvento } from '../events/ticketEvents';
 
 function obterNivel(usuario: string): number {
     if (usuario === "suporte_1") return 1;
@@ -49,6 +50,8 @@ export async function criarTicket(req: Request, res: Response) {
             })
             return res.status(201).json({ticket: ticket, comentario: comentario});
         }
+
+        emitirEvento("ticket_criado", ticket);
 
         return res.status(201).json(ticket);
     } catch(e) {
@@ -206,7 +209,7 @@ export async function escalarTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "O ticket já foi finalizado" })
         };
 
-        await prisma.ticket.update({
+        const ticket = await prisma.ticket.update({
             where: {
                 id: id
             },
@@ -216,6 +219,9 @@ export async function escalarTicket(req: Request, res: Response) {
                 }
             }
         });
+
+        emitirEvento("ticket_escalado", ticket);
+
         return res.status(200).json({ message: "Ticket escalado para nível superior" });
     } catch(e) {
         return res.status(500).json({ message: "Erro ao escalar ticket", erro: e })
@@ -244,7 +250,7 @@ export async function resolverTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Operação inválida" })
         }
 
-        await prisma.ticket.update({
+        const ticket = await prisma.ticket.update({
             where: {
                 id: id
             },
@@ -252,6 +258,8 @@ export async function resolverTicket(req: Request, res: Response) {
                 status: "em_andamento"
             }
         })
+
+        emitirEvento("ticket_resolvido", ticket);
 
         return res.status(200).json({ message: "Ticket em_andamento" })
 
@@ -282,7 +290,7 @@ export async function fecharTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Operação inválida" })
         }
 
-        await prisma.ticket.update({
+        const ticket = await prisma.ticket.update({
             where: {
                 id: id
             },
@@ -292,6 +300,8 @@ export async function fecharTicket(req: Request, res: Response) {
                 status: "fechado"
             }
         });
+
+        emitirEvento("ticket_fechado", ticket);
 
         return res.status(200).json({ message: "Ticket fechado" })
     } catch (e) {
@@ -321,7 +331,7 @@ export async function reabrirTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Operação inválida" })
         }
 
-        await prisma.ticket.update({
+        const ticket = await prisma.ticket.update({
             where: {
                 id: id
             },
@@ -329,6 +339,8 @@ export async function reabrirTicket(req: Request, res: Response) {
                 status: "aberto"
             }
         })
+
+        emitirEvento("ticket_aberto", ticket);
 
         return res.status(200).json({ message: "Ticket aberto novamente" })
     } catch (e) {
