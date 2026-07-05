@@ -10,17 +10,35 @@ export async function logar(email, senha) {
             body: JSON.stringify({
                 email: email,
                 senha: senha
-            })
+            }),
+            credentials: 'include'
         })
 
-        const { token, pagina } = await login.json();
+        const { pagina } = await login.json();
 
         const data = {
-            token,
             pagina
         }
 
         return data ;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+export async function deslogar() {
+    try {
+        const logout = await fetch(`http://${apiUrl}/auth/logout`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: 'include'
+        })
+
+        const result = await logout.json()
+        return result;
+        
     } catch (error) {
         throw new Error(error)
     }
@@ -46,14 +64,13 @@ export async function cadastrar(nome, email, senha) {
 }
 
 export async function buscarDadosUsuario() {
-    const token = localStorage.getItem("token")
     try {
         const usuario = await fetch(`http://${apiUrl}/users/me`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
         })
 
         const data = await usuario.json()
@@ -65,14 +82,13 @@ export async function buscarDadosUsuario() {
 }
 
 export async function buscarTickets() {
-    const token = localStorage.getItem("token")
     try {
         const tickets = await fetch(`http://${apiUrl}/tickets`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
         });
 
         const data = await tickets.json()
@@ -82,18 +98,17 @@ export async function buscarTickets() {
     }
 }
 
-export async function buscarComentarios(id) {
-    const token = localStorage.getItem("token");    
+export async function buscarComentarios(id) {   
     try {
         const comentarios = await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 acao: 'ver_comentarios'
-            })
+            }),
+            credentials: 'include'
         });
 
         const data = await comentarios.json();
@@ -106,19 +121,18 @@ export async function buscarComentarios(id) {
 }
 
 export async function criarTicket(titulo, descricao, comentario) {
-    const token = localStorage.getItem("token");
     try {
         const ticketCriado = await fetch(`http://${apiUrl}/tickets/create`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 titulo: titulo,
                 descricao: descricao,
                 comentario: comentario || undefined
-            })
+            }),
+            credentials: 'include'
         });
 
         const data = await ticketCriado.json()
@@ -130,19 +144,18 @@ export async function criarTicket(titulo, descricao, comentario) {
 }
 
 export async function comentarTicket(id, comentario) {
-    const token = localStorage.getItem("token");
 
     try {
         const coment = await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 acao: 'comentar',
                 comentario: comentario
-            })
+            }),
+            credentials: 'include'
         })
 
         const data = await coment.json();
@@ -154,18 +167,17 @@ export async function comentarTicket(id, comentario) {
 }
 
 export async function resolverTicket(id) {
-    const token = localStorage.getItem("token");
 
     try {
         await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 acao: 'resolver'
-            })
+            }),
+            credentials: 'include'
         });
 
         return;
@@ -175,18 +187,17 @@ export async function resolverTicket(id) {
 }
 
 export async function fecharTicket(id, resposta) {
-    const token = localStorage.getItem("token");
     try {
         await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 acao: 'fechar',
                 resposta: resposta
-            })
+            }),
+            credentials: 'include'
         });
 
         return;
@@ -196,17 +207,16 @@ export async function fecharTicket(id, resposta) {
 }
 
 export async function abrirTicket(id) {
-    const token = localStorage.getItem("token");
     try {
         await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 acao: 'abrir',
-            })
+            }),
+            credentials: 'include'
         });
 
         return;
@@ -216,18 +226,17 @@ export async function abrirTicket(id) {
 }
 
 export async function escalarTicket(id) {
-    const token = localStorage.getItem("token");
 
     try {
         await fetch(`http://${apiUrl}/tickets/${id}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 acao: "escalar"
-            })
+            }),
+            credentials: 'include'
         });
 
         return;

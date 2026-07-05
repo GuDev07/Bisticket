@@ -1,4 +1,4 @@
-import { buscarDadosUsuario } from "./api.js";
+import { buscarDadosUsuario, deslogar } from "./api.js";
 import { carregarMeusTickets } from "./ui/myTickets.js";
 import { telaCriarTicket } from "./ui/createTicket.js";
 import { carregarDashboard } from "./ui/dashboard.js";
@@ -11,6 +11,9 @@ const router = {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const usuario = await buscarDadosUsuario();
+    const eventSource = new EventSource(`http://localhost:3000/tickets/stream`, {
+        withCredentials: true
+    });
 
     if (!usuario || !usuario.tipo) {
         window.location.href = './login.html'
@@ -48,8 +51,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
     }
 
-    exitBtn.addEventListener('click', () => {
-        localStorage.removeItem("token");
+    exitBtn.addEventListener('click', async () => {
+        const logout = await deslogar();
+        if (!logout) return;
         window.location.href = './login.html'
     })
+
+    if(usuario.tipo.startsWith("suporte")) {
+        eventSource.addEventListener('ticket_escalado', async (event) => {
+            await carregarMeusTickets(app, usuario)
+        })
+    }
+
+    eventSource.addEventListener('ticket_criado', async (event) => {
+        await carregarMeusTickets(app, usuario)
+    })
+
+    eventSource.addEventListener('ticket_resolvido', async (event) => {
+        await carregarMeusTickets(app, usuario)
+    })
+
+    eventSource.addEventListener('ticket_fechado', async (event) => {
+        await carregarMeusTickets(app, usuario)
+    })
+
+    eventSource.addEventListener('ticket_aberto', async (event) => {
+        await carregarMeusTickets(app, usuario)
+    })
+
+    eventSource.onerror = function async (event) {
+        console.log("Erro na conexão", event)
+    }
 })

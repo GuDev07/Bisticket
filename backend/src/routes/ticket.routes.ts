@@ -3,7 +3,6 @@ import { decidirAcao, listarTickets, criarTicket } from '../controllers/ticketCo
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { verificarToken } from '../utils/jwt';
 import { criarCliente } from '../events/ticketEvents';
-import { JwtPayload } from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -25,7 +24,7 @@ router.get('/stream', async (req, res) => {
     res.header("X-Accel-Buffering", "no");
     res.header("Cache-Control", "no-cache");
 
-    const token: any = req.query.token;
+    const token: any = req.cookies.token;
     const payload = verificarToken(token);
     criarCliente(payload, res)
 

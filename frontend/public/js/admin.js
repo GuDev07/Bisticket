@@ -1,12 +1,12 @@
+import { deslogar } from "./api";
+
 const criarUsuarioBtn = document.querySelector('.create-user-button');
 const logoutBtn = document.getElementById('logout-button');
-const token = localStorage.getItem("token");
 
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem("token");
-    setTimeout(() => {
-        window.location.href = './login.html'
-    }, 500);
+logoutBtn.addEventListener('click', async () => {
+    const logout = await deslogar()
+    if(!logout) return;
+    window.location.href = './login.html'
 })
 
 criarUsuarioBtn.addEventListener('click', async () => {
@@ -32,15 +32,15 @@ async function criar(t, n, e, s) {
         const usuario = await fetch('http://localhost:3000/users/admin/create', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 tipo: t,
                 nome: n,
                 email: e,
                 senha: s
-            })
+            }),
+            credentials: 'include'
         });
 
         const data = await usuario.json();

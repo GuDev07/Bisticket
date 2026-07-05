@@ -1,9 +1,5 @@
 import { abrirTicket, buscarComentarios, buscarTickets, comentarTicket, escalarTicket, fecharTicket, resolverTicket } from "../api.js"
 
-const tokenJWT = localStorage.getItem("token");
-
-const eventSource = new EventSource(`http://localhost:3000/tickets/stream?token=${tokenJWT}`);
-
 function renderTickets(tickets, usuario) {
 
     if (usuario.tipo.startsWith("suporte")) {
@@ -220,25 +216,6 @@ export async function carregarMeusTickets(container, usuario) {
             await abrirTicket(abrirBtn.dataset.id)
         })
     });
-        eventSource.addEventListener('ticket_criado', (event) => {
-            carregarMeusTickets(container, usuario)
-        })
-
-        eventSource.addEventListener('ticket_resolvido', (event) => {
-            carregarMeusTickets(container, usuario)
-        })
-
-        eventSource.addEventListener('ticket_fechado', (event) => {
-            carregarMeusTickets(container, usuario)
-        })
-
-        eventSource.addEventListener('ticket_aberto', (event) => {
-            carregarMeusTickets(container, usuario)
-        })
-
-    eventSource.onerror = function (event) {
-        console.log("Erro na conexão", event)
-    }
 }
 
 async function modalFecharTicket(id, container, usuario) {

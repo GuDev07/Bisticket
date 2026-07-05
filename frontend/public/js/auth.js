@@ -44,8 +44,8 @@ function carregarPagina(pagina) {
     <input class="inter-regular input-text" type="email" placeholder="Email" required>
             <input class="inter-regular input-text" type="password" placeholder="Password" required>
             <div class="link-box">
-                <a href="./forgot-password.html">Esqueceu sua senha?</a>
-                <a id="register-btn">Não tem uma conta?</a>
+                <a href="./forgot-password.html" class="amber-selection">Esqueceu sua senha?</a>
+                <a id="register-btn" class="amber-selection">Não tem uma conta?</a>
             </div>
             <button class="inter-regular button-text" type="submit">Login</button>
             </div>
@@ -62,12 +62,10 @@ function carregarPagina(pagina) {
             return console.log("email ou senha não preenchidos")
         };
         const login = await logar(email, senha)
-        if(!login.token) {
+        if(!login) {
             throw new Error("Erro ao carregar token");
             return;
         }
-
-        localStorage.setItem('token', login.token);
 
         setTimeout(() => {
             window.location.href = `/${login.pagina}.html`

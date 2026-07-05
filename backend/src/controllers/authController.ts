@@ -26,12 +26,29 @@ export async function login(req: Request, res: Response) {
             tipo: usuario.tipo
         })
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
         if (usuario.tipo === "administrador") {
-            return res.status(200).json({ token: token, pagina: "ejf_capivara_admin" })    
+            return res.status(200).json({ pagina: "ejf_capivara_admin" })    
         }
 
-        return res.status(200).json({ token: token, pagina: "tickets" })
+        return res.status(200).json({ pagina: "tickets" })
     } catch(e) {
         return res.status(500).json({ message: "Erro no servidor", erro: e })
     }
+}
+
+export function logout(req: Request, res: Response) {
+    res.clearCookie('token', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false
+    })
+
+    return res.status(200).json({ message: "Logout realizado" })
 }
