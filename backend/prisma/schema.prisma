@@ -62,6 +62,7 @@ model Ticket {
   usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   comentarios Comentario[]
+  anexos Anexo[]
 }
 
 model Comentario {
@@ -72,4 +73,17 @@ model Comentario {
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   usuarioId Int
   usuario User @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
+
+model Anexo {
+  id Int @id @default(autoincrement())
+  nomeDoArquivo String
+  nomeOriginal String
+  caminho String
+  tamanho Int
+  mimeType String
+  enviadoEm DateTime @default(now())
+  ticketId Int
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 }

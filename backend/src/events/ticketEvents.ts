@@ -15,8 +15,13 @@ export function criarCliente(payload: any, res: Response) {
         tipo: payload.tipo,
         res
     })
-
 }
+
+export function deletarCliente(payload: any) {
+    const cliente = clientes.findIndex(c => {c.userId == payload.sub});
+    console.log("Deletado:\n" + clientes[cliente])
+    clientes.splice(cliente, 1);
+};
 
 export function emitirEvento(evento: string, ticket: any) {
     for (const cliente of clientes) {

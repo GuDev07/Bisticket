@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import argon2 from "argon2";
 import { gerarToken } from "../utils/jwt";
+import { deletarCliente } from "../events/ticketEvents";
 
 export async function login(req: Request, res: Response) {
     const { email, senha } = req.body;
@@ -44,6 +45,7 @@ export async function login(req: Request, res: Response) {
 }
 
 export function logout(req: Request, res: Response) {
+    deletarCliente(req.cookies.token)
     res.clearCookie('token', {
         httpOnly: true,
         sameSite: 'lax',
